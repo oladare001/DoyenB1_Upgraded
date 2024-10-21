@@ -26,7 +26,7 @@ load_css('style.css')
 
 
 # Firebase setup
-st.title("Firebase Firestore Data Visualization")
+#st.title("Firebase Firestore Data Visualization")
 
 
 # In[ ]:
