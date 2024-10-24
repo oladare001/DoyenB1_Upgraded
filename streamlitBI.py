@@ -4,6 +4,7 @@
 # In[1]:
 import subprocess
 import sys
+import json
 
 #subprocess.check_call([sys.executable, "-m", "pip", "install", "pillow", "--no-cache-dir"])
 
