@@ -40,7 +40,6 @@ def initialize_firebase():
     service_account_info = json.loads(os.environ['FIREBASE_SERVICE_ACCOUNT_KEY'])
     cred = credentials.Certificate(service_account_info)
     firebase_admin.initialize_app(cred)
-    
     return firestore.client()
 
 @st.cache_data
