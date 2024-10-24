@@ -37,31 +37,36 @@ load_css('style.css')
 # Initialize Firebase
 @st.cache_resource
 def initialize_firebase():
-    # Accessing the API key
-    api_key = st.secrets["my_api"]["api_key"]
+    try:
+        # Accessing the API key
+        api_key = st.secrets["my_api"]["api_key"]
 
-    # Accessing Firebase credentials
-    firebase_credentials = {
-        "type": st.secrets["firebase"]["type"],
-        "project_id": st.secrets["firebase"]["project_id"],
-        "private_key_id": st.secrets["firebase"]["private_key_id"],
-        "private_key": st.secrets["firebase"]["private_key"],
-        "client_email": st.secrets["firebase"]["client_email"],
-        "client_id": st.secrets["firebase"]["client_id"],
-        "auth_uri": st.secrets["firebase"]["auth_uri"],
-        "token_uri": st.secrets["firebase"]["token_uri"],
-        "auth_provider_x509_cert_url": st.secrets["firebase"]["auth_provider_x509_cert_url"],
-        "client_x509_cert_url": st.secrets["firebase"]["client_x509_cert_url"],
-        "universe_domain": st.secrets["firebase"]["universe_domain"]
-    }
+        # Accessing Firebase credentials
+        firebase_credentials = {
+            "type": st.secrets["firebase"]["type"],
+            "project_id": st.secrets["firebase"]["project_id"],
+            "private_key_id": st.secrets["firebase"]["private_key_id"],
+            "private_key": st.secrets["firebase"]["private_key"],
+            "client_email": st.secrets["firebase"]["client_email"],
+            "client_id": st.secrets["firebase"]["client_id"],
+            "auth_uri": st.secrets["firebase"]["auth_uri"],
+            "token_uri": st.secrets["firebase"]["token_uri"],
+            "auth_provider_x509_cert_url": st.secrets["firebase"]["auth_provider_x509_cert_url"],
+            "client_x509_cert_url": st.secrets["firebase"]["client_x509_cert_url"],
+            "universe_domain": st.secrets["firebase"]["universe_domain"]
+        }
 
-    # Initialize Firebase Admin SDK
-    cred = credentials.Certificate(firebase_credentials)
-    
-    if not firebase_admin._apps:
-        firebase_admin.initialize_app(cred)
+        # Initialize Firebase Admin SDK
+        cred = credentials.Certificate(firebase_credentials)
 
-    return firestore.client()
+        if not firebase_admin._apps:
+            firebase_admin.initialize_app(cred)
+
+        return firestore.client()
+
+    except Exception as e:
+        st.error(f"Error initializing Firebase: {e}")
+        return None
 
 @st.cache_data
 def load_data():
