@@ -28,25 +28,19 @@ load_css('style.css')
 # Firebase setup
 #st.title("Firebase Firestore Data Visualization")
 
-
-# In[ ]:
-
-
-# In[3]:
-
 # Initialize Firebase
 @st.cache_resource
 def initialize_firebase():
     try:
-        # Accessing the API key
+        # Accessing the API key (optional, if you need it for other purposes)
         api_key = st.secrets["my_api"]["api_key"]
 
-        # Accessing Firebase credentials
+        # Accessing Firebase credentials from secrets
         firebase_credentials = {
             "type": st.secrets["firebase"]["type"],
             "project_id": st.secrets["firebase"]["project_id"],
             "private_key_id": st.secrets["firebase"]["private_key_id"],
-            "private_key": st.secrets["firebase"]["private_key"],
+            "private_key": st.secrets["firebase"]["private_key"],  # Ensure this is formatted correctly
             "client_email": st.secrets["firebase"]["client_email"],
             "client_id": st.secrets["firebase"]["client_id"],
             "auth_uri": st.secrets["firebase"]["auth_uri"],
@@ -59,14 +53,45 @@ def initialize_firebase():
         # Initialize Firebase Admin SDK
         cred = credentials.Certificate(firebase_credentials)
 
+        # Check if Firebase has already been initialized
         if not firebase_admin._apps:
             firebase_admin.initialize_app(cred)
 
-        return firestore.client()
+        return firestore.client()  # Return the Firestore client
 
     except Exception as e:
         st.error(f"Error initializing Firebase: {e}")
-        return None
+        return None  # Return None if initialization fails
+
+# Example usage of the initialize_firebase function
+if __name__ == "__main__":
+    db = initialize_firebase()  # Call the function to initialize Firebase
+
+    if db is not None:
+        # Proceed with your logic, e.g., loading data from Firestore
+        course_registration_ref = db.collection('CourseRegistration')
+        docs = course_registration_ref.stream()
+        
+        data = [doc.to_dict() for doc in docs]
+        df = pd.DataFrame(data)
+        
+        if not df.empty:
+            df['createdAt'] = pd.to_datetime(df['createdAt'])
+            df['Date'] = df['createdAt'].dt.date
+            df['Time'] = df['createdAt'].dt.time
+            
+        st.write(df)  # Display the DataFrame in Streamlit
+
+
+
+
+
+
+
+
+
+
+
 
 @st.cache_data
 def load_data():
