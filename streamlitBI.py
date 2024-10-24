@@ -35,30 +35,32 @@ st.title("Firebase Firestore Data Visualization")
 
 @st.cache_resource
 def initialize_firebase():
-    # Accessing Firebase credentials from secrets.toml
-    firebase_credentials = {
-        "type": st.secrets["firebase"]["type"],
-        "project_id": st.secrets["firebase"]["project_id"],
-        "private_key_id": st.secrets["firebase"]["private_key_id"],
-        "private_key": st.secrets["firebase"]["private_key"],
-        "client_email": st.secrets["firebase"]["client_email"],
-        "client_id": st.secrets["firebase"]["client_id"],
-        "auth_uri": st.secrets["firebase"]["auth_uri"],
-        "token_uri": st.secrets["firebase"]["token_uri"],
-        "auth_provider_x509_cert_url": st.secrets["firebase"]["auth_provider_x509_cert_url"],
-        "client_x509_cert_url": st.secrets["firebase"]["client_x509_cert_url"]
-    }
+    try:
+        # Accessing Firebase credentials from secrets.toml
+        firebase_credentials = {
+            "type": st.secrets["firebase"]["type"],
+            "project_id": st.secrets["firebase"]["project_id"],
+            "private_key_id": st.secrets["firebase"]["private_key_id"],
+            "private_key": st.secrets["firebase"]["private_key"],
+            "client_email": st.secrets["firebase"]["client_email"],
+            "client_id": st.secrets["firebase"]["client_id"],
+            "auth_uri": st.secrets["firebase"]["auth_uri"],
+            "token_uri": st.secrets["firebase"]["token_uri"],
+            "auth_provider_x509_cert_url": st.secrets["firebase"]["auth_provider_x509_cert_url"],
+            "client_x509_cert_url": st.secrets["firebase"]["client_x509_cert_url"]
+        }
+        
+        # Initialize Firebase Admin SDK
+        cred = credentials.Certificate(firebase_credentials)
+        
+        if not firebase_admin._apps:
+            firebase_admin.initialize_app(cred)
+        
+        return firestore.client()
     
-    # Convert the credentials dictionary to a JSON string
-    service_account_info = json.dumps(firebase_credentials)
-    
-    # Initialize Firebase Admin SDK
-    cred = credentials.Certificate(json.loads(service_account_info))
-    
-    if not firebase_admin._apps:
-        firebase_admin.initialize_app(cred)
-    
-    return firestore.client()
+    except Exception as e:
+        st.error(f"Error initializing Firebase: {e}")
+        return None  # Return None if initialization fails
 
 
 
