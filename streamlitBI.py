@@ -37,24 +37,11 @@ load_css('style.css')
 # Initialize Firebase
 @st.cache_resource
 def initialize_firebase():
-    cred = credentials.Certificate({
-        # Your Firebase credentials here
-  "type": "service_account",
-  "project_id": "doyenifypanelapi",
-  "private_key_id": "da19d7aed2a5591a996b50da828a12398ca52ae1",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCrKK0x/uUFaWLh\nnGoj0svLaIeouCrf8uH5l6cw0wb6aRcKRAbOV3Onc2viEPK0vbbBQB7lo+s1Vxes\nPuQvvWsv6SKCieknX6/heKAkW6Gq7ZSQRGZ61+x4rvSknwTvfSo6n+Yt2QqiW9DL\n8e+YUrmqLoucuFKOaSAV6uogc1SMxLWtOZaDMUUW7SJF2CrVXc1BJ38JfjgEZyX1\nvMKxf81uQMLmxm0sbuUGENfu07hJ8Q5xUwEWXaGbzpJLlXux/BSDijKlSqlolGCH\nRp/L/MIM7soxx70gVcHTWJzBQ+F0Z3Afd6Zv8AS6TXJDF7NDLFESojmSC8dfVwxb\nWJOrBCWDAgMBAAECggEAR5IUTkYsZUVqtDWwSneQgWed5obQYuIQ7UolfuyXS+na\n2Q+WGv2Fnp1MnPUCUGLOQ2P5J4SSS7U18HBCAdZ+tkOSCyz5Al5oUOucZ2erpCqB\nh4waoD6fIt3h7d6S9UQM/wOzADP0Vuz20/lAe50IByo8dhW7a9J4uMGJEnW3gr7l\nsEesZu5iF2APp9j030riB2/TNFEund1tYfuAmrdyJEdq4wiie+Cv5SmSQFjZCBwh\nQeUvANygZeThhbjZXJTy3VEkytqDfaX4V+Yae0uTbdTH/tLxJMTzKnoZ2K4MoVeq\nb0S3esNv7spGV9gQSktXj1SRg5Y1lf0LgpfBXesLUQKBgQDWERqzXzga88fvKBk/\nHJvti6Nm8sGPyTnThBVB18otenM74D0WkByRTFS5p5fkm50wmTjk4se0HMl2FXZH\njg9lZKLLhuXqrInFIbGMOmELf1ki7nkr6ADObI5RGlvEjBuhi2x04lcWlmBpP1xx\n8izvwBW4Me6uQ3dE/nl/igAUkwKBgQDMr9nr9Twl2Nwq05F8d2bOEIgqamMB0OXk\n9klUncFLMJs3klPfNQHgD2ILGdGkkAunMioMOiDQr8tOOsxsQ9BKfcMuFFDajVa8\nZG8OueSgVvs66gfNAP3iNrrvXUcYPzr2KeT9Mt0mTKv3LQIFSf6vgmxJss63YqFe\nNWMOYKyxUQKBgQDNtiQliXR+GhThE3SnfJOvhEgjj1dJGMPUKpLO8lLcv1ZrjMLH\noveA/YxR2OcTjiNRZ30QH4pv4FYNfvRqMO9ErZ/v3BOoH+RJJ2babeOCS//ZnLee\n5NWZiSJ+d8kGKOoIpNY1wKiWES5XFcd9zI84WivFFV7b4gOErtMNKA2JtwKBgDKQ\npqcx2AAJiKpTxbcX0B/L2beQvJCwSHq9lPQAXMX0ZgPedDXJ5IKziibv4+hhZV+S\nduy6V2z2YKUcxW9heU1NsC/r+OVk0S6NKRpcNeyeUEYHlpHAUvfVSWzkgDGvPSOe\nyeD69cMGYd0YE023L+GvuIykTYjkJrUdPzFIFKFhAoGBALNzpE6AzHlYD2uVuAZo\nd8vet/fGcc9TdlwthB33DBKvjNLch9YKBtAnddLgMgJfw7b19s9aKwqitdTSLPkF\nGDejujwBBHcNMrOYO/H1HLgetNJOqpBOjZCvSqsP5B0dd9UBU0JkZeJx7RLX6S7J\nePWybSMilHdF+kOK4A5XX0a9\n-----END PRIVATE KEY-----\n",
-  "client_email": "firebase-adminsdk-8sy6x@doyenifypanelapi.iam.gserviceaccount.com",
-  "client_id": "101420797003633405852",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-8sy6x%40doyenifypanelapi.iam.gserviceaccount.com",
-  "universe_domain": "googleapis.com"
-    })
+    service_account_info = json.loads(os.environ['FIREBASE_SERVICE_ACCOUNT_KEY'])
+    cred = credentials.Certificate(service_account_info)
     firebase_admin.initialize_app(cred)
+    
     return firestore.client()
-
-db = initialize_firebase()
 
 @st.cache_data
 def load_data():
